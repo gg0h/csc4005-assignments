@@ -4,6 +4,7 @@
 
 if [[ -f assignment1.tar.gz ]] 
 then
+    echo "removing old tar file"
     rm assignment1.tar.gz;
 else
     echo "no existing tar files cleanup not performed";
