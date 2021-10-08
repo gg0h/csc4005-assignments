@@ -1,4 +1,7 @@
 #!/bin/bash
 
-gcc testcase_generation.c -o tc
-./tc $(pwd)/file.txt /home/gg0h/csc4005/assignments/assignment1/Assignment1a-dir/inputs 
+# usage ./gen_tests.sh <path/to/output/directory>
+# REMEBER TO MOVE TO NODE BEFORE RUNNING
+
+gcc testcase_generation.c --std=c99 -o tc
+./tc $(pwd)/file.txt $1
