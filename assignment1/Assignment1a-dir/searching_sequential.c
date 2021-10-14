@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <sys/resource.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -15,7 +16,6 @@ int textLength;
 char *patternData;
 int patternLength;
 
-clock_t c0, c1;
 time_t t0, t1;
 
 void outOfMemory()
@@ -115,7 +115,7 @@ int hostMatch(long *comparisons)
 	else
 		return -1;
 }
-void processData()
+void processData(int iterations)
 {
 	unsigned int result;
 	long comparisons;
@@ -123,7 +123,9 @@ void processData()
 	printf("Text length = %d\n", textLength);
 	printf("Pattern length = %d\n", patternLength);
 
-	result = hostMatch(&comparisons);
+	// perform multiple iterations of the search algorithm and take an average
+	for(int i = 0; i< iterations; i++)
+		result = hostMatch(&comparisons);
 	if (result == -1)
 		printf("Pattern not found\n");
 	else
@@ -135,16 +137,32 @@ int main(int argc, char **argv)
 {
 	int testNumber;
 
+	struct rusage usage;
+	struct timeval startTime, endTime;
+
+	// perform multiple iterations of the naive search and take an average to get time measurements for lower text * pattern products, they will round to 0 without this.
+	int iterations = 25;
+
 	testNumber = 0;
 	while (readData(testNumber))
 	{
-		c0 = clock();
-		t0 = time(NULL);
-		processData();
-		c1 = clock();
-		t1 = time(NULL);
-		printf("Test %d elapsed wall clock time = %ld\n", testNumber, (long)(t1 - t0));
-		printf("Test %d elapsed CPU time = %f\n\n", testNumber, (float)(c1 - c0) / CLOCKS_PER_SEC);
+		
+		// I changed the method to measure CPU time, as the existing method had low precison (2DP) when running on kelvin (in my experience)
+		getrusage(RUSAGE_SELF, &usage);
+		startTime = usage.ru_utime;
+		// c0 = clock();
+		processData(iterations);
+
+		getrusage(RUSAGE_SELF, &usage);
+		endTime = usage.ru_utime;
+		// c1 = clock();
+		//printf("Test %d elapsed CPU time = %.6f\n\n", testNumber, ((double)c1 - (double)c0) / CLOCKS_PER_SEC);	
+
+
+		printf("CPU time TOTAL = %.06fs \n", (double)(endTime.tv_sec - startTime.tv_sec) +
+           1e-6*(endTime.tv_usec - startTime.tv_usec));
+		printf("CPU time AVERAGE ITERATION = %.10fs \n\n", (double)((endTime.tv_sec - startTime.tv_sec) +
+           1e-6*(endTime.tv_usec - startTime.tv_usec))/iterations);
 		testNumber++;
 	}
 }

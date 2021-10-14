@@ -32,12 +32,12 @@
 //functions
 void processLine(char * line, int pairNumber);
 struct pairLengths parsePairString(char * pairString);
-void generateOutFile(char * outputDirectory,char * outputFilename, int size);
-char * generateWorstCaseString(int size);
+void generateOutFile(char * outputDirectory,char * outputFilename, long int size);
+char * generateWorstCaseString(long int size);
 
 struct pairLengths{
-    int textLength;
-    int patternLength;
+    long int textLength;
+    long int patternLength;
 };
 
 char * inputFilePath;
@@ -131,7 +131,7 @@ struct pairLengths parsePairString(char * pairString)
 }
 
 
-char * generateWorstCaseString(int size)
+char * generateWorstCaseString(long int size)
 {
     
     if (size == 0)
@@ -142,8 +142,10 @@ char * generateWorstCaseString(int size)
     // allocate on size for the string
     char * content = malloc(size);
     if(!content)
+    {
+        printf("cannot allocate %ld bytes\n", size);
         exit(1);
-
+    }
     if (size == 1)
     {
         content[0] = 'B';
@@ -160,21 +162,48 @@ char * generateWorstCaseString(int size)
     return content;
 }
 
-void generateOutFile(char * outputDirectory,char * outputFilename, int size)
+void generateOutFile(char * outputDirectory,char * outputFilename, long int size)
 {
     // string operations to get path to the output file
     char outputFilePath[256];
     strncpy(outputFilePath, outputDirectory, 256);
     strncat(outputFilePath, outputFilename, sizeof(outputFilePath) - strlen(outputFilePath) - 1);
 
-    // get a file handle to output file
+    // functionality added to allow writing files 
+    char * content;
     FILE * outFile;
+    // size is small enough for dynamic allocation
+
+    // get a file handle to output file
     outFile = fopen(outputFilePath, "w");
 
     //pointer to address with generated string
-    char * content = generateWorstCaseString(size);
+    content = generateWorstCaseString(size);
     //
     fwrite(content, sizeof(char), size, outFile);
     // free allocated heap space
     free(content);
+
+    // close file pointer
+    fclose(outFile);
+    // } else {
+    //     // allocate and write in chunks
+
+    //     // get a file handle to output file
+    //     outFile = fopen(outputFilePath, "a");
+
+    //     //pointer to address with generated string
+    //     content = generateWorstCaseString(alloc_size);  // problem here. need string of only A
+
+    //     // this makes the assumption that size % alloc_size =0. 
+    //     int iterations = size / alloc_size;
+    //     for(int i = 0; i < iterations; i++) {
+    //         fwrite(content, sizeof(char), alloc_size, outFile);
+    //     }
+    //     // free allocated heap space
+    //     free(content);
+
+    //     // close file pointer
+    //     fclose(outFile);
+    // }
 }
