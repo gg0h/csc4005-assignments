@@ -85,37 +85,46 @@ int readData(int testNumber)
 
 int hostMatch(long *comparisons)
 {
-	int i, j, k, lastI;
 
-	i = 0;   //current starting position on the text, from which a match can be checked
-	j = 0;   //current postion on the pattern
-	k = 0;   //position on the text being checked against a pattern position
-	lastI = textLength - patternLength;  // last index to be checked, any further len of pattern would bypass end of array
+	int lastI = textLength - patternLength;  // last index to be checked, any further len of pattern would bypass end of array
 	*comparisons = 0;
 
+	int startingMatchIndex = -1; //index at which the pattern match begins, update in loop when found
+	printf("Running with %d processors ======================= \n", omp_get_num_procs());
 
-	while (i <= lastI && j < patternLength)
+	long int tmpComparisons;	
+	#pragma omp parallel shared(tmpComparisons, startingMatchIndex) num_threads(4)
 	{
-		(*comparisons)++;
-		if (textData[k] == patternData[j])
-		{
-			// text position k matches start of pattern,
-			k++;
-			j++;
-			// if entire pattern matches, latter while condition broken so loop finishes
+		
+		#pragma omp for reduction(+: tmpComparisons)
+		for (int i = 0; i <= textLength - patternLength; i++) {
+			// cannot break, but at least remove work after pattern found
+			// if (startingMatchIndex != -1) continue;
+
+			//printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
+			int j;
+
+			/* For current index i, check for pattern match */
+			for (j = 0; j < patternLength; j++)
+			{
+				tmpComparisons++;
+				if (patternData[j] != textData[j + i])
+					break;
+			}
+			// this check will only pass if starting from index i in text all positions match the pattern
+			// patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
+			if (patternLength == j)
+			{
+				startingMatchIndex = i;
+				printf("Match found for pattern starting at index %d \n", startingMatchIndex);
+			}
 		}
-		else
-		{
-			// advanced i for starting position on text to check pattern, reset k to i position, reset j to start of pattern (0)
-			i++;
-			k = i;
-			j = 0;
-		}
+		
 	}
-	if (j == patternLength)
-		return i;
-	else
-		return -1;
+	*comparisons = tmpComparisons;
+	return startingMatchIndex;
+
+	
 }
 void processData(int iterations)
 {
@@ -146,21 +155,25 @@ int main(int argc, char **argv)
 	int iterations = 1;
 
 	testNumber = 0;
+	// clock_t c0, c1;
 	while (readData(testNumber))
 	{
 		
 		// I changed the method to measure CPU time, as the existing method had low precison (2DP) when running on kelvin (in my experience)
 		getrusage(RUSAGE_SELF, &usage);
 		startTime = usage.ru_utime;
-		
+		// c0 = clock();
 		processData(iterations);
 
 		getrusage(RUSAGE_SELF, &usage);
 		endTime = usage.ru_utime;
+		// c1 = clock();
+		// printf("Test %d elapsed CPU time = %.6f\n\n", testNumber, ((double)c1 - (double)c0) / CLOCKS_PER_SEC);	
 
-		printf("CPU time TOTAL = %.06f ITERATIONS = %d\n", (double)(endTime.tv_sec - startTime.tv_sec) +
-           1e-6*(endTime.tv_usec - startTime.tv_usec), iterations);
-		printf("CPU time AVERAGE ITERATION = %.10f \n\n", (double)((endTime.tv_sec - startTime.tv_sec) +
+
+		printf("CPU time TOTAL = %.06fs \n", (double)(endTime.tv_sec - startTime.tv_sec) +
+           1e-6*(endTime.tv_usec - startTime.tv_usec));
+		printf("CPU time AVERAGE ITERATION = %.10fs \n\n", (double)((endTime.tv_sec - startTime.tv_sec) +
            1e-6*(endTime.tv_usec - startTime.tv_usec))/iterations);
 		testNumber++;
 	}
