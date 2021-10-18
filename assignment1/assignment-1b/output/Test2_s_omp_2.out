@@ -1,0 +1,116 @@
+Mon Oct 18 18:44:52 BST 2021
+Read test number 0
+Text length = 10000000
+Pattern length = 1000
+Running with 4 processors ======================= 
+Running with 32 threads ======================= 
+Match found for pattern starting at index 5001001 
+Match found for pattern starting at index 5002002 
+Match found for pattern starting at index 5004002 
+Match found for pattern starting at index 5007001 
+Match found for pattern starting at index 5010999 
+Match found for pattern starting at index 5015996 
+Match found for pattern starting at index 5021992 
+Match found for pattern starting at index 5028987 
+Match found for pattern starting at index 5036981 
+Match found for pattern starting at index 5045974 
+Match found for pattern starting at index 5055966 
+Match found for pattern starting at index 5066957 
+Match found for pattern starting at index 5078947 
+Match found for pattern starting at index 5091936 
+Match found for pattern starting at index 5105924 
+Match found for pattern starting at index 5120911 
+Match found for pattern starting at index 5136897 
+Match found for pattern starting at index 5153882 
+Match found for pattern starting at index 5171866 
+Match found for pattern starting at index 5190849 
+Match found for pattern starting at index 5210831 
+Match found for pattern starting at index 5231812 
+Match found for pattern starting at index 5253792 
+Match found for pattern starting at index 5276771 
+Match found for pattern starting at index 5300749 
+Match found for pattern starting at index 5325726 
+Match found for pattern starting at index 5351702 
+Match found for pattern starting at index 5378677 
+Match found for pattern starting at index 5406651 
+Match found for pattern starting at index 5435624 
+Match found for pattern starting at index 5465596 
+Match found for pattern starting at index 5496567 
+Match found for pattern starting at index 5528537 
+Match found for pattern starting at index 5561506 
+Match found for pattern starting at index 5595474 
+Match found for pattern starting at index 5630441 
+Match found for pattern starting at index 5666407 
+Match found for pattern starting at index 5703372 
+Match found for pattern starting at index 5741336 
+Match found for pattern starting at index 5780299 
+Match found for pattern starting at index 5820261 
+Match found for pattern starting at index 5861222 
+Match found for pattern starting at index 5903182 
+Match found for pattern starting at index 5946141 
+Match found for pattern starting at index 5990099 
+Match found for pattern starting at index 6035056 
+Match found for pattern starting at index 6081012 
+Match found for pattern starting at index 6127967 
+Match found for pattern starting at index 6175921 
+Match found for pattern starting at index 6224874 
+Match found for pattern starting at index 6274826 
+Match found for pattern starting at index 6325777 
+Match found for pattern starting at index 6377727 
+Match found for pattern starting at index 6430676 
+Match found for pattern starting at index 6484624 
+Match found for pattern starting at index 6539571 
+Match found for pattern starting at index 6595517 
+Match found for pattern starting at index 6652462 
+Match found for pattern starting at index 6710406 
+Match found for pattern starting at index 6769349 
+Match found for pattern starting at index 6829291 
+Match found for pattern starting at index 6890232 
+Match found for pattern starting at index 6952172 
+Match found for pattern starting at index 7015111 
+Match found for pattern starting at index 7079049 
+Match found for pattern starting at index 7143986 
+Match found for pattern starting at index 7209922 
+Match found for pattern starting at index 7276857 
+Match found for pattern starting at index 7344791 
+Match found for pattern starting at index 7413724 
+Match found for pattern starting at index 7483656 
+Match found for pattern starting at index 7554587 
+Match found for pattern starting at index 7626517 
+Match found for pattern starting at index 7699446 
+Match found for pattern starting at index 7773374 
+Match found for pattern starting at index 7848301 
+Match found for pattern starting at index 7924227 
+Match found for pattern starting at index 8001152 
+Match found for pattern starting at index 8079076 
+Match found for pattern starting at index 8157999 
+Match found for pattern starting at index 8237921 
+Match found for pattern starting at index 8318842 
+Match found for pattern starting at index 8400762 
+Match found for pattern starting at index 8483681 
+Match found for pattern starting at index 8567599 
+Match found for pattern starting at index 8652516 
+Match found for pattern starting at index 8738432 
+Match found for pattern starting at index 8825347 
+Match found for pattern starting at index 8913261 
+Match found for pattern starting at index 9002174 
+Match found for pattern starting at index 9092086 
+Match found for pattern starting at index 9182997 
+Match found for pattern starting at index 9274907 
+Match found for pattern starting at index 9367816 
+Match found for pattern starting at index 9461724 
+Match found for pattern starting at index 9556631 
+Match found for pattern starting at index 9652537 
+Match found for pattern starting at index 9749442 
+Match found for pattern starting at index 9847346 
+Match found for pattern starting at index 9946249 
+Found 100 occurences of the pattern in the text
+# comparisons = 9896796494
+CPU time TOTAL = 8.299876s 
+CPU time AVERAGE ITERATION = 8.2998760000s 
+
+
+real	0m2.168s
+user	0m8.363s
+sys	0m0.016s
+Mon Oct 18 18:44:54 BST 2021

@@ -89,26 +89,25 @@ int hostMatch(long *comparisons)
 	int lastI = textLength - patternLength;  // last index to be checked, any further len of pattern would bypass end of array
 	*comparisons = 0;
 
-	int startingMatchIndex = -1; //index at which the pattern match begins, update in loop when found
+	int found = 0; // count of found matches
 	printf("Running with %d processors ======================= \n", omp_get_num_procs());
 
 	long int tmpComparisons;	
-	#pragma omp parallel shared(tmpComparisons, startingMatchIndex) firstprivate(textData, patternData, lastI, patternLength) default(none)
+	#pragma omp parallel shared(tmpComparisons, found) firstprivate(textData, patternData, lastI, patternLength) default(none)
 	{
 		#pragma omp master
 		{
 			printf("Running with %d threads ======================= \n", omp_get_num_threads());
-			// initialize here, excluding this can lead to integer overflow (in my experience)
+			// initialize here, excluding this can lead to integer overflow
 			tmpComparisons = 0;
 		}
 
 		// synchronise here for tmpComparison initialization before entering loop
-		#pragma omp barrier		
-		
-		#pragma omp for reduction(+: tmpComparisons) 
+		#pragma omp barrier
+
+		#pragma omp for reduction(+: tmpComparisons) schedule(static, 100)
 		for (int i = 0; i <= lastI; i++) {
-			// if the pattern match position has not been updated (found), do work. Otherwise no work. Cannot break in OMP for loop so this removes work from iterations after found.
-			if (startingMatchIndex == -1)
+			if (found < 100)
 			{
 				//printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
 				int j;
@@ -124,17 +123,25 @@ int hostMatch(long *comparisons)
 				// patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
 				if (patternLength == j)
 				{
-					startingMatchIndex = i;
-					printf("Match found for pattern starting at index %d \n", startingMatchIndex);
+					// critical here to prevent startingMatchIndex from changing between assignment and print
+					#pragma atomic update	
+					found += 1;
+					printf("Match found for pattern starting at index %d \n", i);	
 				}
 			}
+		}
+
+		// if found not incremented no match. single construct because we only want to notify once.
+		#pragma omp single
+		{
+			if (found == 0)
+				printf("Pattern not found in text.\n");
+			printf("Found %d occurences of the pattern in the text\n", found);
 		}
 		
 	}
 	*comparisons = tmpComparisons;
-	return startingMatchIndex;
-
-	
+	return found;
 }
 void processData(int iterations)
 {
@@ -147,10 +154,6 @@ void processData(int iterations)
 	// perform multiple iterations of the search algorithm and take an average
 	for(int i = 0; i< iterations; i++)
 		result = hostMatch(&comparisons);
-	if (result == -1)
-		printf("Pattern not found\n");
-	else
-		printf("Pattern found at position %d\n", result);
 	printf("# comparisons = %ld\n", comparisons);
 }
 

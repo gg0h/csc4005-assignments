@@ -1,0 +1,17 @@
+Mon Oct 18 18:34:13 BST 2021
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 2 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3993296000
+CPU time TOTAL = 1.568212s 
+CPU time AVERAGE ITERATION = 1.5682120000s 
+
+
+real	0m0.802s
+user	0m1.579s
+sys	0m0.003s
+Mon Oct 18 18:34:14 BST 2021

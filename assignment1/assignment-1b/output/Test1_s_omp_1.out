@@ -1,0 +1,17 @@
+Mon Oct 18 18:39:29 BST 2021
+Read test number 0
+Text length = 10000000
+Pattern length = 1000
+Running with 4 processors ======================= 
+Running with 2 threads ======================= 
+Match found for pattern starting at index 1001 
+Pattern found at position 1001
+# comparisons = 999000
+CPU time TOTAL = 0.063769s 
+CPU time AVERAGE ITERATION = 0.0637690000s 
+
+
+real	0m0.100s
+user	0m0.122s
+sys	0m0.007s
+Mon Oct 18 18:39:29 BST 2021

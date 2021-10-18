@@ -105,7 +105,7 @@ int hostMatch(long *comparisons)
 		// synchronise here for tmpComparison initialization before entering loop
 		#pragma omp barrier
 
-		#pragma omp for reduction(+: tmpComparisons) ordered schedule(dynamic)
+		#pragma omp for reduction(+: tmpComparisons) ordered schedule(static, 100)
 		for (int i = 0; i <= lastI; i++) {
 			// if the pattern match position has not been updated (found), do work. Otherwise no work. Cannot break in OMP for loop so this removes work from iterations after found.
 			if (startingMatchIndex == -1)

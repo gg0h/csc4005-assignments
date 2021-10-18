@@ -1,0 +1,107 @@
+Mon Oct 18 18:34:48 BST 2021
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 1 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3996002000
+CPU time TOTAL = 1.540245s 
+CPU time AVERAGE ITERATION = 1.5402450000s 
+
+
+real	0m1.556s
+user	0m1.553s
+sys	0m0.001s
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 2 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3996002000
+CPU time TOTAL = 1.548011s 
+CPU time AVERAGE ITERATION = 1.5480110000s 
+
+
+real	0m0.790s
+user	0m1.560s
+sys	0m0.001s
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 4 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3996002000
+CPU time TOTAL = 1.544708s 
+CPU time AVERAGE ITERATION = 1.5447080000s 
+
+
+real	0m0.788s
+user	0m1.555s
+sys	0m0.003s
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 8 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3960440000
+CPU time TOTAL = 1.531338s 
+CPU time AVERAGE ITERATION = 1.5313380000s 
+
+
+real	0m0.787s
+user	0m1.543s
+sys	0m0.002s
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 16 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3996002000
+CPU time TOTAL = 1.547348s 
+CPU time AVERAGE ITERATION = 1.5473480000s 
+
+
+real	0m0.800s
+user	0m1.560s
+sys	0m0.002s
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 32 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3996002000
+CPU time TOTAL = 1.549997s 
+CPU time AVERAGE ITERATION = 1.5499970000s 
+
+
+real	0m0.802s
+user	0m1.561s
+sys	0m0.004s
+Read test number 0
+Text length = 2000000
+Pattern length = 2000
+Running with 2 processors ======================= 
+Running with 64 threads ======================= 
+Match found for pattern starting at index 1998000 
+Pattern found at position 1998000
+# comparisons = 3981686000
+CPU time TOTAL = 1.552835s 
+CPU time AVERAGE ITERATION = 1.5528350000s 
+
+
+real	0m0.796s
+user	0m1.564s
+sys	0m0.007s
+Mon Oct 18 18:34:54 BST 2021
