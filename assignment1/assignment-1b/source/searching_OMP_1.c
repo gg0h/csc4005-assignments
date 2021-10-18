@@ -105,36 +105,31 @@ int hostMatch(long *comparisons)
 		// synchronise here for tmpComparison initialization before entering loop
 		#pragma omp barrier
 
-		#pragma omp for reduction(+: tmpComparisons) schedule(static) 
+		#pragma omp for reduction(+: tmpComparisons) ordered schedule(dynamic)
 		for (int i = 0; i <= lastI; i++) {
-			// cannot break, but at least remove work after pattern found
-			if (startingMatchIndex != -1) continue;
-
-			//printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
-			int j;
-
-			/* For current index i, check for pattern match */
-			for (j = 0; j < patternLength; j++)
+			// if the pattern match position has not been updated (found), do work. Otherwise no work. Cannot break in OMP for loop so this removes work from iterations after found.
+			if (startingMatchIndex == -1)
 			{
-				tmpComparisons++;
-				if (patternData[j] == textData[j + i])
+				//printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
+				int j;
+
+				// For current index i, check for pattern match character by character, if at any point pattern does not match, break. 
+				for (j = 0; j < patternLength; j++)
 				{
-					continue;
+					tmpComparisons++;
+					if (patternData[j] != textData[j + i])
+						break;
 				}
-				break;
+				// this check will only pass if starting from index i in text all positions match the pattern
+				// patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
+				if (patternLength == j)
+				{
+					startingMatchIndex = i;
+					printf("Match found for pattern starting at index %d \n", startingMatchIndex);
+				}
 			}
-			// this check will only pass if starting from index i in text all positions match the pattern
-			// patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
-			if (patternLength == j)
-			{
-				// is this necessary??
-				#pragma omp atomic write
-				startingMatchIndex = i;
-				
-			}
-
-			//printf("Comparisons on thread when found %ld\n", tmpComparisons);
 		}
+
 		
 	}
 	*comparisons = tmpComparisons;

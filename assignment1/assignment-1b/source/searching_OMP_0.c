@@ -105,8 +105,8 @@ int hostMatch(long *comparisons)
 		// synchronise here for tmpComparison initialization before entering loop
 		#pragma omp barrier		
 		
-		#pragma omp for reduction(+: tmpComparisons)
-		for (int i = 0; i <= textLength - patternLength; i++) {
+		#pragma omp for reduction(+: tmpComparisons) firstprivate(textData, patternData, lastI, patternLength) default(none)
+		for (int i = 0; i <= lastI; i++) {
 			// if the pattern match position has not been updated (found), do work. Otherwise no work. Cannot break in OMP for loop so this removes work from iterations after found.
 			if (startingMatchIndex == -1)
 			{

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=40173582-sequential-pattern-search
-#SBATCH -o logs/sequential-pattern-search.%N.%j.out
-#SBATCH -e logs/sequential-pattern-search.%N.%j.err
+#SBATCH --job-name=40173582-s_omp_1
+#SBATCH -o logs/s_omp_1.%N.%j.out
+#SBATCH -e logs/s_omp_1.%N.%j.err
 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
@@ -13,6 +13,8 @@ date
 
 export OMP_NUM_THREADS=2
 
-{ time ./s_omp_1; } 2>&1  # program is dependant on the existence of test0 to run test1, shuffle the folder to rename test1 -> test0 so real test0 does not interfere with timings.
+# program is dependant on the existence of test0 to run test1, shuffle the folder to rename test1 -> test0 so real test0 does not interfere with timings.
+# REMEBER TO RENAME TESTS ACCORDINGLY
+{ time ./s_omp_1; } 2>&1  
 
 date
