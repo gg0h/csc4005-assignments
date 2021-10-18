@@ -93,30 +93,40 @@ int hostMatch(long *comparisons)
 	printf("Running with %d processors ======================= \n", omp_get_num_procs());
 
 	long int tmpComparisons;	
-	#pragma omp parallel shared(tmpComparisons, startingMatchIndex) num_threads(4)
+	#pragma omp parallel shared(tmpComparisons, startingMatchIndex) 
 	{
+		#pragma omp master
+		{
+			printf("Running with %d threads ======================= \n", omp_get_num_threads());
+			// initialize here, excluding this can lead to integer overflow (in my experience)
+			tmpComparisons = 0;
+		}
+
+		// synchronise here for tmpComparison initialization before entering loop
+		#pragma omp barrier		
 		
 		#pragma omp for reduction(+: tmpComparisons)
 		for (int i = 0; i <= textLength - patternLength; i++) {
-			// cannot break, but at least remove work after pattern found
-			// if (startingMatchIndex != -1) continue;
-
-			//printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
-			int j;
-
-			/* For current index i, check for pattern match */
-			for (j = 0; j < patternLength; j++)
+			// if the pattern match position has not been updated (found), do work. Otherwise no work. Cannot break in OMP for loop so this removes work from iterations after found.
+			if (startingMatchIndex == -1)
 			{
-				tmpComparisons++;
-				if (patternData[j] != textData[j + i])
-					break;
-			}
-			// this check will only pass if starting from index i in text all positions match the pattern
-			// patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
-			if (patternLength == j)
-			{
-				startingMatchIndex = i;
-				printf("Match found for pattern starting at index %d \n", startingMatchIndex);
+				//printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
+				int j;
+
+				// For current index i, check for pattern match character by character, if at any point pattern does not match, break. 
+				for (j = 0; j < patternLength; j++)
+				{
+					tmpComparisons++;
+					if (patternData[j] != textData[j + i])
+						break;
+				}
+				// this check will only pass if starting from index i in text all positions match the pattern
+				// patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
+				if (patternLength == j)
+				{
+					startingMatchIndex = i;
+					printf("Match found for pattern starting at index %d \n", startingMatchIndex);
+				}
 			}
 		}
 		
