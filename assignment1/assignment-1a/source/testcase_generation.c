@@ -35,6 +35,7 @@ struct pairLengths parsePairString(char * pairString);
 void generateOutFile(char * outputDirectory,char * outputFilename, long int size);
 char * generateWorstCaseString(long int size);
 
+// struct for pair length info
 struct pairLengths{
     long int textLength;
     long int patternLength;
@@ -59,7 +60,7 @@ int main(int argc, char * argv[])
     // read the text and pattern lengths line by line from the input file
 
     FILE* filePointer;
-    char line[MAX_LINE_LENGTH];
+    char line[MAX_LINE_LENGTH]; // we are assuming here a line in the input file will not be greater than 100 chars 
 
     // open input file, verify can read
 
@@ -94,15 +95,14 @@ void processLine(char * line, int pairNumber)
     char outputDirectory[256]; // concat onto base dir
     char dirName[100];
     sprintf(dirName, "/test%d", pairNumber);  // CHECK
-    strncpy(outputDirectory, outputBasePath, 256);
-    strncat(outputDirectory, dirName, sizeof(outputDirectory) - strlen(outputDirectory) - 1);
-    
-    // /home/gg0h/csc4005/assignments/assignment1/Assignment1a-dir/source/test0
+    strncpy(outputDirectory, outputBasePath, 256);  // copy the outputBasePath cmdline arg into outputDirectory buffer
+    strncat(outputDirectory, dirName, sizeof(outputDirectory) - strlen(outputDirectory) - 1); // safely concat the current testx dir to the outputDirectory
 
     if ((mkdir(outputDirectory, 0700)))
     {
+        // if exists, quit
         printf("Directory %s already exists", outputDirectory);
-        //exit(1);
+        exit(1);
     }
         
 
@@ -139,7 +139,7 @@ char * generateWorstCaseString(long int size)
         printf("Error: cannot use a size 0 pattern/text file");
         exit(1);
     }
-    // allocate on size for the string
+    // allocate on heap size for the string
     char * content = malloc(size);
     if(!content)
     {
@@ -148,11 +148,13 @@ char * generateWorstCaseString(long int size)
     }
     if (size == 1)
     {
+        // string 1 char, just need a B
         content[0] = 'B';
         
     }    
     else
     {
+        // make every character except the last an A, last char a B
         for (int i = 0; i < size -1; i++)
         {
             content[i] = 'A';
@@ -166,44 +168,23 @@ void generateOutFile(char * outputDirectory,char * outputFilename, long int size
 {
     // string operations to get path to the output file
     char outputFilePath[256];
+    // concat filename to outputDirectory
     strncpy(outputFilePath, outputDirectory, 256);
     strncat(outputFilePath, outputFilename, sizeof(outputFilePath) - strlen(outputFilePath) - 1);
 
-    // functionality added to allow writing files 
+    // get a file handle to output file
     char * content;
     FILE * outFile;
-    // size is small enough for dynamic allocation
-
-    // get a file handle to output file
+    
     outFile = fopen(outputFilePath, "w");
 
     //pointer to address with generated string
     content = generateWorstCaseString(size);
-    //
+    //write string to file
     fwrite(content, sizeof(char), size, outFile);
-    // free allocated heap space
+    // free heap space allocated to content in function generateWorstCaseString
     free(content);
 
     // close file pointer
     fclose(outFile);
-    // } else {
-    //     // allocate and write in chunks
-
-    //     // get a file handle to output file
-    //     outFile = fopen(outputFilePath, "a");
-
-    //     //pointer to address with generated string
-    //     content = generateWorstCaseString(alloc_size);  // problem here. need string of only A
-
-    //     // this makes the assumption that size % alloc_size =0. 
-    //     int iterations = size / alloc_size;
-    //     for(int i = 0; i < iterations; i++) {
-    //         fwrite(content, sizeof(char), alloc_size, outFile);
-    //     }
-    //     // free allocated heap space
-    //     free(content);
-
-    //     // close file pointer
-    //     fclose(outFile);
-    // }
 }
