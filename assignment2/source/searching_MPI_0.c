@@ -4,13 +4,22 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <mpi.h>
 
+/**
+ * Naive pattern search, embarrasingly parallel implementation
+ *    _____ __________.___                __    __                                                           .__     
+ *   /     \\______   \   | ___________ _/  |__/  |_  ___________  ____     ______ ____ _____ _______   ____ |  |__  
+ *  /  \ /  \|     ___/   | \____ \__  \\   __\   __\/ __ \_  __ \/    \   /  ___// __ \\__  \\_  __ \_/ ___\|  |  \ 
+ * /    Y    \    |   |   | |  |_> > __ \|  |  |  | \  ___/|  | \/   |  \  \___ \\  ___/ / __ \|  | \/\  \___|   Y  \
+ * \____|__  /____|   |___| |   __(____  /__|  |__|  \___  >__|  |___|  / /____  >\___  >____  /__|    \___  >___|  /
+ *         \/               |__|       \/                \/           \/       \/     \/     \/            \/     \/ 
+ * Usage: 
+ * mpicc searching_MPI_0.c -O2 --std=gnu99 -o searching_MPI_0
+ * mpirun -np 8 searching_MPI_0 <numberOfPatternFiles>
+ * 
+**/
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Program main
-////////////////////////////////////////////////////////////////////////////////
 
 char *textData;
 int textLength;
@@ -141,16 +150,73 @@ void processData()
 
 int main(int argc, char **argv)
 {
-	int testNumber;
 
+	// Initialize the MPI environment
+	MPI_Init(NULL, &argv);
+
+	// synchronise for timing
+	MPI_Barrier(MPI_COMM_WORLD);
+	double start = MPI_Wtime();
+
+	int numPatterns;
+	if (!argv[1])
+	{
+		// default to 8 patterns unless specified in arg
+		numPatterns = 8;
+	}
+	else
+	{
+		// cast string cmdline arg to integer
+		numPatterns = atoi(argv[1]);
+	}
+
+	// Find out rank, size
+	int worldRank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
+	int worldSize;
+	MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
+
+	int testNumber;
+	// read text once
 	readText();
 
 	testNumber = 1;
-	while (readPattern (testNumber))
+	while (testNumber <= numPatterns)
 	{	
-   	 	processData();
+		// This will divide the test cases evenly between the processes
+		// when worldSize == 2, pattern is 1, 0, 1, 0, 1, 0 ...
+		// when worldSize == 4, pattern is 1, 2, 3, 0, 1, 2 ...
+		// when worldSize == 8, pattern is 1, 2, 3, 4 ... 7, 0
+		// if worldSize is greater than 8, not all processes are used, as only 8 testCases
+		if (testNumber % worldSize == worldRank) 
+		{
+			printf("Processing test number %d in process %d\n", testNumber, worldRank);
+			readPattern(testNumber);
+			processData();
+		}
 		testNumber++;
 	}
 
+	// syncrhonise for timing
+	MPI_Barrier(MPI_COMM_WORLD);
+	double totalTime = MPI_Wtime();
+
+	// implemented this MPI time calculation to check consistency of time obtain using /bin/time
+	double avgTime, minTime, maxTime;
+
+	// maximum search time from all processes
+	MPI_Reduce(&totalTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+	// minimum search time from all processes
+	MPI_Reduce(&totalTime, &minTime, 1, MPI_DOUBLE, MPI_MIN, 0,MPI_COMM_WORLD);
+	// total sum of time from all processes (take average when printing)
+	MPI_Reduce(&totalTime, &avgTime, 1, MPI_DOUBLE, MPI_SUM, 0,MPI_COMM_WORLD);
+
+	if (worldRank == 0) 
+   	{
+		avgTime /= worldSize;
+		printf("Minimum search time: %lf Maximum search time: %lf Average search time: %lf\n", minTime, maxTime, avgTime);
+   	}
+
+	MPI_Finalize();
 
 }

@@ -14,10 +14,10 @@ module add mpi/openmpi
 date
 
 # Compiling the Program
-mpicc program5.c -O2 --std=gnu99 -o program5
+mpicc searching_MPI_0.c -O2 --std=gnu99 -o searching_MPI_0
 
 # Executes the compiled program on 4 MPI processes
-mpirun -np 8 program5
+{ time mpirun -np 8 searching_MPI_0 8; } 2>&1
 
 # Prints date
 date
