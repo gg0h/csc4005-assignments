@@ -69,7 +69,6 @@ void readFromFile (FILE *f, char **data, int *length)
 void readText () {
 	FILE *f;
 	char fileName[1000];
-	printf("test\n");
 	sprintf (fileName, "inputs/text.txt");
 	f = fopen (fileName, "r");
 	if (f == NULL)
@@ -82,18 +81,18 @@ void readText () {
 }
 
 
-int readPattern (int testNumber)
+int readPattern (int patternNumber)
 {
 	FILE *f;
 	char fileName[1000];
-	sprintf (fileName, "inputs/pattern%d.txt", testNumber);
+	sprintf (fileName, "inputs/pattern%d.txt", patternNumber);
 	f = fopen (fileName, "r");
 	if (f == NULL)
 		return 0;
 	readFromFile (f, &patternData, &patternLength);
 	fclose (f);
 
-	printf ("Read Pattern number %d\n", testNumber);
+	printf ("Read Pattern number %d\n", patternNumber);
 
 	return 1;
 
@@ -176,32 +175,35 @@ int main(int argc, char **argv)
 	int worldSize;
 	MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
 
-	int testNumber;
+	int patternNumber;
 	// read text once
 	readText();
 
-	testNumber = 1;
-	while (testNumber <= numPatterns)
+	patternNumber = 1;
+	while (patternNumber <= numPatterns)
 	{	
 		// This will divide the test cases evenly between the processes
 		// when worldSize == 2, pattern is 1, 0, 1, 0, 1, 0 ...
 		// when worldSize == 4, pattern is 1, 2, 3, 0, 1, 2 ...
 		// when worldSize == 8, pattern is 1, 2, 3, 4 ... 7, 0
 		// if worldSize is greater than 8, not all processes are used, as only 8 testCases
-		if (testNumber % worldSize == worldRank) 
+		if (patternNumber % worldSize == worldRank) 
 		{
-			printf("Processing test number %d in process %d\n", testNumber, worldRank);
-			readPattern(testNumber);
+			printf("Processing test number %d in process %d\n", patternNumber, worldRank);
+			readPattern(patternNumber);
 			processData();
 		}
-		testNumber++;
+		patternNumber++;
 	}
 
-	// syncrhonise for timing
+	// record elapsed time for process, synchronise for reduction
+	double totalTime = MPI_Wtime() - start;
 	MPI_Barrier(MPI_COMM_WORLD);
-	double totalTime = MPI_Wtime();
+	
 
 	// implemented this MPI time calculation to check consistency of time obtain using /bin/time
+	// There is a slight difference from the overhead of the program, 
+	// but for consistency with earlier time measurements I have continued to use /bin/time for timings in graphs
 	double avgTime, minTime, maxTime;
 
 	// maximum search time from all processes

@@ -1,0 +1,47 @@
+Mon Nov 15 13:37:00 GMT 2021
+test
+Read Pattern number 1
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9996000
+# comparisons = 9994003000
+Read Pattern number 2
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 1000
+# comparisons = 501500
+Read Pattern number 3
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9997000
+# comparisons = 9994503500
+Read Pattern number 4
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 3000
+# comparisons = 1502500
+Read Pattern number 5
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9998000
+# comparisons = 9995004000
+Read Pattern number 6
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 2000
+# comparisons = 1002000
+Read Pattern number 7
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9999000
+# comparisons = 9995504500
+Read Pattern number 8
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 0
+# comparisons = 1000
+
+real	0m37.193s
+user	0m37.139s
+sys	0m0.027s
+Mon Nov 15 13:37:37 GMT 2021

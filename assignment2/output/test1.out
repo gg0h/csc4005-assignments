@@ -1,0 +1,161 @@
+Mon Nov 15 20:20:27 GMT 2021
+Processing test number 2 in process 0
+Read Pattern number 2
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 1000
+# comparisons = 501500
+Processing test number 4 in process 0
+Read Pattern number 4
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 3000
+# comparisons = 1502500
+Processing test number 6 in process 0
+Read Pattern number 6
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 2000
+# comparisons = 1002000
+Processing test number 8 in process 0
+Read Pattern number 8
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 0
+# comparisons = 1000
+Processing test number 1 in process 1
+Read Pattern number 1
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9996000
+# comparisons = 9994003000
+Processing test number 3 in process 1
+Read Pattern number 3
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9997000
+# comparisons = 9994503500
+Processing test number 5 in process 1
+Read Pattern number 5
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9998000
+# comparisons = 9995004000
+Processing test number 7 in process 1
+Read Pattern number 7
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9999000
+# comparisons = 9995504500
+Minimum search time: 0.174598 Maximum search time: 44.484965 Average search time: 22.329781
+
+real	0m44.965s
+user	0m44.449s
+sys	0m0.115s
+Processing test number 4 in process 0
+Processing test number 1 in process 1
+Read Pattern number 4
+Text length = 10000000
+Pattern length = 1000
+Read Pattern number 1
+Text length = 10000000
+Pattern length = 1000
+Processing test number 3 in process 3
+Pattern found at position 3000
+# comparisons = 1502500
+Processing test number 8 in process 0
+Read Pattern number 8
+Text length = 10000000
+Read Pattern number 3
+Pattern length = 1000
+Pattern found at position 0
+# comparisons = 1000
+Text length = 10000000
+Pattern length = 1000
+Processing test number 2 in process 2
+Read Pattern number 2
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 1000
+# comparisons = 501500
+Processing test number 6 in process 2
+Read Pattern number 6
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 2000
+# comparisons = 1002000
+Pattern found at position 9997000
+# comparisons = 9994503500
+Processing test number 7 in process 3
+Read Pattern number 7
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9996000
+# comparisons = 9994003000
+Processing test number 5 in process 1
+Read Pattern number 5
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 9999000
+# comparisons = 9995504500
+Pattern found at position 9998000
+# comparisons = 9995004000
+Minimum search time: 0.164554 Maximum search time: 22.313827 Average search time: 11.127365
+
+real	0m24.354s
+user	0m22.355s
+sys	0m0.121s
+Processing test number 3 in process 3
+Read Pattern number 3
+Text length = 10000000
+Pattern length = 1000
+Processing test number 1 in process 1
+Read Pattern number 1
+Processing test number 8 in process 0
+Text length = 10000000
+Pattern length = 1000
+Read Pattern number 8
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 0
+# comparisons = 1000
+Processing test number 7 in process 7
+Processing test number 5 in process 5
+Read Pattern number 7
+Text length = 10000000
+Pattern length = 1000
+Read Pattern number 5
+Processing test number 2 in process 2
+Text length = 10000000
+Pattern length = 1000
+Read Pattern number 2
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 1000
+# comparisons = 501500
+Processing test number 6 in process 6
+Read Pattern number 6
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 2000
+# comparisons = 1002000
+Processing test number 4 in process 4
+Read Pattern number 4
+Text length = 10000000
+Pattern length = 1000
+Pattern found at position 3000
+# comparisons = 1502500
+Pattern found at position 9997000
+# comparisons = 9994503500
+Pattern found at position 9998000
+# comparisons = 9995004000
+Pattern found at position 9999000
+# comparisons = 9995504500
+Pattern found at position 9996000
+# comparisons = 9994003000
+Minimum search time: 0.164722 Maximum search time: 11.254427 Average search time: 5.636677
+
+real	0m11.916s
+user	0m11.298s
+sys	0m0.110s
+Mon Nov 15 20:21:48 GMT 2021
