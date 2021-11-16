@@ -1,0 +1,300 @@
+Tue Nov 16 21:04:11 GMT 2021
+This is process 1, received size of 5000000 and allocated. First Char is A
+Read Pattern number 1
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 1 here my result is 4996000
+process 0 here my result is -1
+Pattern number 1 found at position 9996000, by process 1
+Read Pattern number 2
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 0 here my result is -1
+Pattern number 2 found at position 9998000, by process 1
+process 1 here my result is 4998000
+Read Pattern number 3
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 0 here my result is -1
+Pattern number 3 found at position 9997000, by process 1
+process 1 here my result is 4997000
+Read Pattern number 4
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 0 here my result is -1
+Pattern number 4 found at position 9999000, by process 1
+process 1 here my result is 4999000
+Read Pattern number 5
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 0 here my result is 1000
+Pattern number 5 found at position 1000, by process 0
+process 1 here my result is -1
+Read Pattern number 6
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 0 here my result is 2000
+Pattern number 6 found at position 2000, by process 0
+process 1 here my result is -1
+Read Pattern number 7
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 0 here my result is 3000
+Pattern number 7 found at position 3000, by process 0
+process 1 here my result is -1
+Read Pattern number 8
+process 0 here my pattern len is 1000
+process 0 here my result is 0
+process 1 here my pattern len is 1000
+Pattern number 8 found at position 0, by process 0
+Minimum search time: 43.983196 Maximum search time: 43.983499 Average search time: 43.983347
+process 1 here my result is -1
+
+real	0m45.411s
+user	0m43.983s
+sys	0m0.134s
+This is process 1, received size of 2500000 and allocated. First Char is A
+This is process 2, received size of 2500000 and allocated. First Char is A
+This is process 3, received size of 2500000 and allocated. First Char is A
+Read Pattern number 1
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 3 here my result is 2496000
+process 2 here my result is -1
+process 1 here my result is -1
+process 0 here my result is -1
+Pattern number 1 found at position 9996000, by process 3
+Read Pattern number 2
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 3 here my result is 2498000
+process 2 here my result is -1
+process 0 here my result is -1
+Pattern number 2 found at position 9998000, by process 3
+process 1 here my result is -1
+Read Pattern number 3
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 3 here my result is 2497000
+process 2 here my result is -1
+process 0 here my result is -1
+Pattern number 3 found at position 9997000, by process 3
+process 1 here my result is -1
+Read Pattern number 4
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 3 here my result is 2499000
+process 2 here my result is -1
+process 0 here my result is -1
+Pattern number 4 found at position 9999000, by process 3
+process 1 here my result is -1
+Read Pattern number 5
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 0 here my result is 1000
+process 3 here my result is -1
+process 2 here my result is -1
+Pattern number 5 found at position 1000, by process 0
+process 1 here my result is -1
+Read Pattern number 6
+process 0 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 0 here my result is 2000
+process 3 here my result is -1
+process 2 here my result is -1
+Pattern number 6 found at position 2000, by process 0
+process 1 here my result is -1
+Read Pattern number 7
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 0 here my result is 3000
+process 3 here my result is -1
+process 2 here my result is -1
+Pattern number 7 found at position 3000, by process 0
+process 1 here my result is -1
+Read Pattern number 8
+process 0 here my pattern len is 1000
+process 0 here my result is 0
+process 3 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 3 here my result is -1
+process 2 here my result is -1
+Pattern number 8 found at position 0, by process 0
+process 1 here my result is -1
+Minimum search time: 21.820858 Maximum search time: 22.212678 Average search time: 22.086305
+
+real	0m22.801s
+user	0m22.241s
+sys	0m0.147s
+This is process 1, received size of 1250000 and allocated. First Char is A
+This is process 2, received size of 1250000 and allocated. First Char is A
+This is process 3, received size of 1250000 and allocated. First Char is A
+This is process 4, received size of 1250000 and allocated. First Char is A
+This is process 5, received size of 1250000 and allocated. First Char is A
+This is process 6, received size of 1250000 and allocated. First Char is A
+This is process 7, received size of 1250000 and allocated. First Char is A
+Read Pattern number 1
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 1 here my result is -1
+process 2 here my result is -1
+process 0 here my result is -1
+process 7 here my result is 1246000
+Pattern number 1 found at position 9996000, by process 7
+process 6 here my result is -1
+Read Pattern number 2
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 2 here my result is -1
+process 7 here my result is 1248000
+process 0 here my result is -1
+process 6 here my result is -1
+Pattern number 2 found at position 9998000, by process 7
+process 1 here my result is -1
+Read Pattern number 3
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 2 here my result is -1
+process 0 here my result is -1
+process 7 here my result is 1247000
+process 1 here my result is -1
+Pattern number 3 found at position 9997000, by process 7
+process 6 here my result is -1
+Read Pattern number 4
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 2 here my result is -1
+process 0 here my result is -1
+process 7 here my result is 1249000
+process 1 here my result is -1
+Pattern number 4 found at position 9999000, by process 7
+process 6 here my result is -1
+Read Pattern number 5
+process 0 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 0 here my result is 1000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 2 here my result is -1
+process 7 here my result is -1
+process 1 here my result is -1
+Pattern number 5 found at position 1000, by process 0
+process 6 here my result is -1
+Read Pattern number 6
+process 0 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 0 here my result is 2000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 6 here my result is -1
+process 2 here my result is -1
+process 7 here my result is -1
+Pattern number 6 found at position 2000, by process 0
+process 1 here my result is -1
+Read Pattern number 7
+process 0 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 3 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 0 here my result is 3000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 2 here my result is -1
+process 7 here my result is -1
+process 1 here my result is -1
+Pattern number 7 found at position 3000, by process 0
+process 6 here my result is -1
+Read Pattern number 8
+process 0 here my pattern len is 1000
+process 0 here my result is 0
+process 3 here my pattern len is 1000
+process 6 here my pattern len is 1000
+process 2 here my pattern len is 1000
+process 1 here my pattern len is 1000
+process 7 here my pattern len is 1000
+process 4 here my pattern len is 1000
+process 5 here my pattern len is 1000
+process 3 here my result is -1
+process 4 here my result is -1
+process 5 here my result is -1
+process 2 here my result is -1
+process 1 here my result is -1
+process 7 here my result is -1
+Pattern number 8 found at position 0, by process 0
+process 6 here my result is -1
+Minimum search time: 11.418238 Maximum search time: 11.771208 Average search time: 11.657378
+
+real	0m12.337s
+user	0m11.796s
+sys	0m0.144s
+Tue Nov 16 21:05:31 GMT 2021
