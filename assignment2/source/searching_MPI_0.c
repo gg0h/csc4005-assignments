@@ -20,23 +20,19 @@
  * 
 **/
 
-
 char *textData;
 int textLength;
 
 char *patternData;
 int patternLength;
 
-clock_t c0, c1;
-time_t t0, t1;
-
 void outOfMemory()
 {
-	fprintf (stderr, "Out of memory\n");
-	exit (0);
+	fprintf(stderr, "Out of memory\n");
+	exit(0);
 }
 
-void readFromFile (FILE *f, char **data, int *length)
+void readFromFile(FILE *f, char **data, int *length)
 {
 	int ch;
 	int allocatedLength;
@@ -46,73 +42,68 @@ void readFromFile (FILE *f, char **data, int *length)
 	allocatedLength = 0;
 	result = NULL;
 
-	
-
-	ch = fgetc (f);
+	ch = fgetc(f);
 	while (ch >= 0)
 	{
 		resultLength++;
 		if (resultLength > allocatedLength)
 		{
 			allocatedLength += 10000;
-			result = (char *) realloc (result, sizeof(char)*allocatedLength);
+			result = (char *)realloc(result, sizeof(char) * allocatedLength);
 			if (result == NULL)
 				outOfMemory();
 		}
-		result[resultLength-1] = ch;
+		result[resultLength - 1] = ch;
 		ch = fgetc(f);
 	}
 	*data = result;
 	*length = resultLength;
 }
 
-void readText () {
+void readText()
+{
 	FILE *f;
 	char fileName[1000];
-	sprintf (fileName, "inputs/text.txt");
-	f = fopen (fileName, "r");
+	sprintf(fileName, "inputs/text.txt");
+	f = fopen(fileName, "r");
 	if (f == NULL)
 	{
 		printf("Error cannot read file: %s", fileName);
 		exit(0);
 	}
-	readFromFile (f, &textData, &textLength);
-	fclose (f);
+	readFromFile(f, &textData, &textLength);
+	fclose(f);
 }
 
-
-int readPattern (int patternNumber)
+int readPattern(int patternNumber)
 {
 	FILE *f;
 	char fileName[1000];
-	sprintf (fileName, "inputs/pattern%d.txt", patternNumber);
-	f = fopen (fileName, "r");
+	sprintf(fileName, "inputs/pattern%d.txt", patternNumber);
+	f = fopen(fileName, "r");
 	if (f == NULL)
 		return 0;
-	readFromFile (f, &patternData, &patternLength);
-	fclose (f);
+	readFromFile(f, &patternData, &patternLength);
+	fclose(f);
 
-	printf ("Read Pattern number %d\n", patternNumber);
+	printf("Read Pattern number %d\n", patternNumber);
 
 	return 1;
-
 }
-
-
 
 int hostMatch(long *comparisons)
 {
-	int i,j,k, lastI;
-	
-	i=0;
-	j=0;
-	k=0;
-	lastI = textLength-patternLength;
-        *comparisons=0;
+	int i, j, k, lastI;
 
-	while (i<=lastI && j<patternLength)
+	i = 0;
+	j = 0;
+	k = 0;
+	lastI = textLength - patternLength;
+	*comparisons = 0;
+
+	while (i <= lastI && j < patternLength)
 	{
-                (*comparisons)++;
+		(*comparisons)++;
 		if (textData[k] == patternData[j])
 		{
 			k++;
@@ -121,8 +112,8 @@ int hostMatch(long *comparisons)
 		else
 		{
 			i++;
-			k=i;
-			j=0;
+			k = i;
+			j = 0;
 		}
 	}
 	if (j == patternLength)
@@ -133,18 +124,17 @@ int hostMatch(long *comparisons)
 void processData()
 {
 	unsigned int result;
-        long comparisons;
+	long comparisons;
 
-	printf ("Text length = %d\n", textLength);
-	printf ("Pattern length = %d\n", patternLength);
+	printf("Text length = %d\n", textLength);
+	printf("Pattern length = %d\n", patternLength);
 
 	result = hostMatch(&comparisons);
 	if (result == -1)
-		printf ("Pattern not found\n");
+		printf("Pattern not found\n");
 	else
-		printf ("Pattern found at position %d\n", result);
-        printf ("# comparisons = %ld\n", comparisons);
-
+		printf("Pattern found at position %d\n", result);
+	printf("# comparisons = %ld\n", comparisons);
 }
 
 int main(int argc, char **argv)
@@ -181,13 +171,13 @@ int main(int argc, char **argv)
 
 	patternNumber = 1;
 	while (patternNumber <= numPatterns)
-	{	
+	{
 		// This will divide the test cases evenly between the processes
 		// when worldSize == 2, pattern is 1, 0, 1, 0, 1, 0 ...
 		// when worldSize == 4, pattern is 1, 2, 3, 0, 1, 2 ...
 		// when worldSize == 8, pattern is 1, 2, 3, 4 ... 7, 0
 		// if worldSize is greater than 8, not all processes are used, as only 8 testCases
-		if (patternNumber % worldSize == worldRank) 
+		if (patternNumber % worldSize == worldRank)
 		{
 			printf("Processing test number %d in process %d\n", patternNumber, worldRank);
 			readPattern(patternNumber);
@@ -199,26 +189,24 @@ int main(int argc, char **argv)
 	// record elapsed time for process, synchronise for reduction
 	double totalTime = MPI_Wtime() - start;
 	MPI_Barrier(MPI_COMM_WORLD);
-	
 
 	// implemented this MPI time calculation to check consistency of time obtain using /bin/time
-	// There is a slight difference from the overhead of the program, 
+	// There is a slight difference from the overhead of the program,
 	// but for consistency with earlier time measurements I have continued to use /bin/time for timings in graphs
 	double avgTime, minTime, maxTime;
 
 	// maximum search time from all processes
 	MPI_Reduce(&totalTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 	// minimum search time from all processes
-	MPI_Reduce(&totalTime, &minTime, 1, MPI_DOUBLE, MPI_MIN, 0,MPI_COMM_WORLD);
+	MPI_Reduce(&totalTime, &minTime, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
 	// total sum of time from all processes (take average when printing)
-	MPI_Reduce(&totalTime, &avgTime, 1, MPI_DOUBLE, MPI_SUM, 0,MPI_COMM_WORLD);
+	MPI_Reduce(&totalTime, &avgTime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-	if (worldRank == 0) 
-   	{
+	if (worldRank == 0)
+	{
 		avgTime /= worldSize;
 		printf("Minimum search time: %lf Maximum search time: %lf Average search time: %lf\n", minTime, maxTime, avgTime);
-   	}
+	}
 
 	MPI_Finalize();
-
 }
