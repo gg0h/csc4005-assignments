@@ -1,5 +1,8 @@
 .vscode
 *.tar.gz
 assignment1/**/inputs
+final_project/inputs
+final_project/small_inputs
+final_project/test_set
 compile
 ms
