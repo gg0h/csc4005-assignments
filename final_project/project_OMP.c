@@ -249,8 +249,6 @@ void processData()
         searchForEveryOccurrence();
         
     }
-
-	
 }
 
 /**

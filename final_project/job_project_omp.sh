@@ -9,6 +9,8 @@
 
 date
 
-./execute_OMP small-inputs
+./execute_OMP small_inputs
+sort -k 1,1n -k 2,2n -k 3,3n result_OMP.txt > sorted_OMP.txt
+diff sorted_OMP.txt small_inputs_sorted.txt
 
 date
