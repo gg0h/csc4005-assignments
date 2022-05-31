@@ -7,9 +7,6 @@
 #include <sys/resource.h>
 #include <omp.h>
 
-////////////////////////////////////////////////////////////////////////////////
-// Program main
-////////////////////////////////////////////////////////////////////////////////
 
 char *textData;
 int textLength;
@@ -20,6 +17,10 @@ int patternLength;
 FILE* resultFile;
 int textIndex, patternIndex, operationMode;
 
+/**
+ * @brief A function to determine when memory has been depleted
+ * 
+ */
 void outOfMemory()
 {
 	fprintf(stderr, "Out of memory\n");
@@ -33,7 +34,6 @@ void outOfMemory()
  * @param data - pointer to an array 
  * @param length - pointer to variable to store length of file
  */
-
 void readFromFile(FILE *f, char **data, int *length)
 {
 	int ch;
@@ -126,11 +126,9 @@ int searchForFirstOccurrence() {
 			printf("Running with %d threads ======================= \n", omp_get_num_threads());
 		}
 
-		// synchronise here for tmpComparison initialization before entering loop
-		#pragma omp barrier
-
-		#pragma omp for schedule(static, 100)
-		for (int i = 0; i <= lastI; i++) {
+		int i;
+		#pragma omp for schedule(dynamic)
+		for (i = 0; i <= lastI; i++) {
 			// if the pattern match position has not been updated (found), do work. Otherwise no work. Cannot break in OMP for loop so this removes work from iterations after found.
 			if (startingMatchIndex == -1)
 			{
@@ -189,11 +187,10 @@ int searchForEveryOccurrence()
 			printf("Running with %d threads ======================= \n", omp_get_num_threads());
 		}
 
-		// synchronise here for tmpComparison initialization before entering loop
-		#pragma omp barrier
 
-		#pragma omp for schedule(static, 100)
-		for (int i = 0; i <= lastI; i++) {
+		int i;
+		#pragma omp for schedule(dynamic)
+		for (i = 0; i <= lastI; i++) {
 
             //printf("Parallel For Iteration %d calling from thread %d \n", i, omp_get_thread_num() );
             int j;
@@ -207,9 +204,7 @@ int searchForEveryOccurrence()
             // this check will only pass if starting from index i in text all positions match the pattern
             // patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
             if (patternLength == j)
-            {
-                // critical here to prevent startingMatchIndex from changing between assignment and print
-                #pragma atomic update	
+            {	
                 found += 1;
                 printf("Match found for pattern starting at index %d \n", i);
                 // write textIndex, patternindex and index of found occurrence to result file
@@ -291,6 +286,10 @@ int checkEdgeCases() {
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Program main
+////////////////////////////////////////////////////////////////////////////////
+
 int main(int argc, char **argv)
 {
 
@@ -323,12 +322,10 @@ int main(int argc, char **argv)
         if( strcmp(controlFileLine, "\r\n") == 0 || strcmp(controlFileLine, "\n") == 0 )
             break;
         
-        // printf("Retrieved line of length %zu:\n", read);
 
         // process line from the control file to extract commands
         parseControlFileLine(controlFileLine);
 
-        // printf("Read from line %s: text %d pattern %d mode %d \n", controlFileLine, textIndex, patternIndex, operationMode );
  
         // using the file index parsed from the control file line, read in the correct pattern and text files
         readData(textIndex, patternIndex);
@@ -353,7 +350,7 @@ int main(int argc, char **argv)
     }
 
 
-               
+	// close file handles
     fclose(controlFile);
     fclose(resultFile);
 

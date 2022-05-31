@@ -15,13 +15,13 @@
 **/
 
 
-char *textData;
+char *textData = NULL;
 int textLength;
 
 int textChunkSize;
 char *textChunkProc;
 
-char *patternData;
+char *patternData = NULL;
 int patternLength;
 
 int worldRank, worldSize;
@@ -30,14 +30,26 @@ int operationMode, textIndex, patternIndex;
 
 FILE* controlFile;
 FILE* resultFile;
-char * controlFileLine;
+char * controlFileLine = NULL;
 int searchStartPositionsLength, searchStartPositionsLengthDiv, searchStartPositionsLengthMod;
 
+/**
+ * @brief A function to determine when memory has been depleted
+ * 
+ */
 void outOfMemory()
 {
 	fprintf(stderr, "Out of memory\n");
 	exit(0);
 }
+
+/**
+ * @brief - Function to read from a file and allocate space to store the contents of the file in a local array
+ * 
+ * @param f - file pointer 
+ * @param data - pointer to an array 
+ * @param length - pointer to variable to store length of file
+ */
 
 void readFromFile(FILE *f, char **data, int *length)
 {
@@ -152,6 +164,15 @@ int checkEdgeCases() {
     return 0;
 }
 
+/**
+ * @brief A function to determine the starting positon of a pattern in the overall text given the calling process rank and index found in the process chunk
+ * This is similar to the calculation to determine the starting index of a chunk, except the found index within the chunk is added to produce the index in 
+ * the overall text at which the pattern starts
+ * 
+ * @param processRank - rank of the calling process
+ * @param indexInChunk - index in the text chunk of the process at which the pattern starts
+ * @return int - index in textData the same pattern will start at
+ */
 
 int calculateOverallIndexInText(int processRank, int indexInChunk)
 {
@@ -160,9 +181,9 @@ int calculateOverallIndexInText(int processRank, int indexInChunk)
 }
 
 /**
- * @brief 
- * 
- * @return int 
+ * @brief A functrion to search textCHunk of calling process for the current pattern
+ * This uses the provided naive pattern searching algorithm
+ * @return int - index of the first occurrence
  */
 int searchFirstOccurence()
 {
@@ -194,13 +215,14 @@ int searchFirstOccurence()
 }
 
 /**
- * @brief A function to find all occurrences of the pattern in text. Features a dynamically growing array of found indexes in overall text
- * 
- * @return int - number of occurences
+ * @brief  A function to find all occurrences of the pattern in text. Features a dynamically growing array of found indexes in overall text.
+ * This is a reimplementation of the naive pattern search as nested for loops but the algorithm is the same
+ * @param found an integer point, will be updated as occurrences are found
+ * @return int*  - pointer to the array containing indicies in the total text data
  */
 int * searchEveryOccurence(int * found)
 {   
-    int lastI = textLength - patternLength;  // last index to be checked, any further len of pattern would bypass end of text array
+    int lastI = textChunkSize - patternLength;  // last index to be checked, any further len of pattern would bypass end of text array
 
 	*found = 0; // count of found matches
     int foundSize = 0; // current size of found array
@@ -215,35 +237,35 @@ int * searchEveryOccurence(int * found)
         // For current index i, check for pattern match character by character, if at any point pattern does not match, break. 
         for (j = 0; j < patternLength; j++)
         {
-            if (patternData[j] != textData[j + i])
+            if (patternData[j] != textChunkProc[j + i])
                 break;
         }
         // this check will only pass if starting from index i in text all positions match the pattern
         // patternData[0, ..., patternLength -1]  == textData[i, ..., i+ patternLength - 1]
         if (patternLength == j)
         {
-            // array full, make larger
+            // need to make array larger
             if (*found == foundSize) {
                 //need more space in the array
 
                 foundSize += 20;
-                tmp = realloc(foundArray, foundSize); // get a new larger array
+                tmp = (int *)realloc(foundArray, sizeof(int) * foundSize); // get a new larger array
                 if (!tmp)
                     MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE); // if cannot allocate array abort
 
                 foundArray = tmp;
             }
-            printf("found at index %d in chunk on proc %d\n", i, worldRank);
-            printf("overall index %d\n", calculateOverallIndexInText(worldRank, i));
+            // update the found array to store the index in the overall text at which this pattern occurs
             foundArray[*found] = calculateOverallIndexInText(worldRank, i);
-            printf("overall index from array %d\n", foundArray[*found]);
-            *found += 1;
+            *found = *found + 1;
         }
     }
     return foundArray;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+// Program main
+////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char **argv)
 {
@@ -257,7 +279,6 @@ int main(int argc, char **argv)
 
 	// Find out rank, size
 	MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
-
 	MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
 
     if(worldRank == 0)
@@ -282,7 +303,7 @@ int main(int argc, char **argv)
         }
     }
         
-    // repeat until condition is met that each process will break from this loop
+    // repeat until condition is met that each process will break from this loop (No more lines in control file to read)
     while(1) 
     {
         // master process
@@ -309,8 +330,6 @@ int main(int argc, char **argv)
 
             // process line from the control file to extract commands
             parseControlFileLine(controlFileLine);
-            
-            // printf("Read from line %s: text %d pattern %d mode %d \n", controlFileLine, textIndex, patternIndex, operationMode );
     
             // using the file index parsed from the control file line, read in the correct pattern and text files
             readData(textIndex, patternIndex);
@@ -384,7 +403,6 @@ int main(int argc, char **argv)
                     
                     textChunkProc = (char *)malloc(textChunkSize * sizeof(char));
 
-                    // TODO memcpy
 
                     // copy chunk from overall textData into allocate chunk
                     for (int i = textChunkStart, j = 0; i < textChunkEnd, j < textChunkSize; i++, j++)
@@ -431,11 +449,12 @@ int main(int argc, char **argv)
 
         }
 
-        // searching
+        // searching - collective communication functions are used throughout in this to simplify the code and reduce overhead of inteprocess communication
+        // this increases performance as there is less idling as opposed to if the master was communicating with each slave process iteratively.
+        // operation mode 0 uses MPI_Reduce to infer if any match was found amon all the process, 
+        // operation mode 1 use MPI_Gather and MPI_Gatherv to join an array of matching postions from each process, which the master process then writes to the results file 
 
         MPI_Barrier(MPI_COMM_WORLD);
-
-        
 
         //master broadcasts pattern length to all other procs
 		MPI_Bcast(&patternLength, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -446,35 +465,38 @@ int main(int argc, char **argv)
 		//master broadcasts pattern to all other procs
 		MPI_Bcast(patternData, patternLength, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-        // master broadcast oepration mode to use
+        // master broadcast operation mode to use
         MPI_Bcast(&operationMode, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
         
 
-        // OPERATION MODE, SWAP FUNCTION TO SEARCH
+        // Swap type of search to perform based on operation mode
         if (operationMode == 0)
         {
             // using this method, we get get the rank of process when reducing
-            int localResult[2], masterResult[2], totalIndex;
+            int localResult[2], masterResult[2];
 
             // store process rank
             localResult[1] = worldRank;
-            // don't search if there is an empty chunk for this process
+            
+            // don't search if there is an empty chunk for this process - store the return from the search otherwise
             localResult[0] = textChunkSize != 0 ? searchFirstOccurence() : -1;
-
+            
+            // reduce localResult of each process to masterResult, because we only need to know if it occurs we take the max 
+            // maximum -1: doesn't occur
+            // maximum > -1: occurs
             MPI_Reduce(localResult, masterResult, 1, MPI_2INT, MPI_MAXLOC, 0, MPI_COMM_WORLD);
             if (worldRank == 0)
             {
                 // if reduce max of every process is -1, then found in 0 occurences in text chunks
                 if (masterResult[0] == -1){
                     printf("Pattern number %d not found!\n", patternIndex);
+                    // does not occur, write to result
                     fprintf(resultFile,"%d %d %d\n", textIndex, patternIndex, -1);
                 }
                 else
                 {
-                    // calculate the start index for this process again, and add the found index for the process
-                    totalIndex = calculateOverallIndexInText(masterResult[1], masterResult[0]);
-                    printf("Pattern number %d found at position %d in text %d, by process %d\n", patternIndex,  totalIndex, textIndex, masterResult[1]);
+                    // occurs, write to output
                     fprintf(resultFile,"%d %d %d\n", textIndex, patternIndex, -2);
                 }
                     
@@ -487,63 +509,72 @@ int main(int argc, char **argv)
             MPI_Bcast(&searchStartPositionsLengthDiv, 1, MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(&searchStartPositionsLengthMod, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-            // search
+            // declare variables to store search result
             int found;
-            int* foundArray;
+            int* foundArray = NULL;
 
+            // pass pointer to found to get updated in function, a pointer to array of found indicies is returned
             foundArray = searchEveryOccurence(&found);
-            // MPI_Gather lengths of the "found" arrays - array containing overall text index for each occurence
+            
             if (!foundArray)
                 foundArray = malloc( 0 * sizeof(int)); // this cannot be null for gather
                     
-
+            // declare pointer, to be initialised as array containing number of found occurrences for each process
             int *foundLengths = NULL;
 
             // Only root has the received data 
             if (worldRank == 0)
                 foundLengths = malloc( worldSize * sizeof(int)) ;
 
-            // gather lengths of the foundArray from each process
+            // MPI_Gather lengths of the foundArray on each process, store these lengths in foundLengths. 
+            //The rank of the process can be used to index the array length for that process
             MPI_Gather(&found, 1, MPI_INT,
                     foundLengths, 1, MPI_INT,
                     0, MPI_COMM_WORLD);
 
-            
-            // MPI_Gatherv arrays with index in overall text precalculated by each process
-
+        
+            // declare the total number of occurences
             int totalNumFound = 0;
+            // array that will hold displacement values (offset) for the foundArray of each process in the totalFoundArray
             int *displacements = NULL;
+            // array that will be a combination of the foundArray from every process
             int *totalFoundArray = NULL;
 
             if (worldRank == 0) {
+                // there will be a displacement value for the foundArray of each process
                 displacements = malloc( worldSize * sizeof(int) );
-
+                // master will have no displacement, start of totalFoundArray
                 displacements[0] = 0;
+                // add number found on master
                 totalNumFound += foundLengths[0];
 
+                // calculate the displacement and number occurrences from each process
                 for (int i = 1; i < worldSize; i++) {
-                    totalNumFound += foundLengths[i];   /* plus one for space or \0 after words */
+                    totalNumFound += foundLengths[i];   
                     displacements[i] = displacements[i-1] + foundLengths[i-1];
                 }
 
-                // allocate array, pre-fill with 0
+                // allocate totalFoundArray, pre-fill with 0
                 totalFoundArray = malloc(totalNumFound * sizeof(int));            
                 for (int i = 0; i < totalNumFound; i++)
                     totalFoundArray[i] = 0;
             }
 
 
-            // gather the arrays of found indexes
+             // MPI_Gatherv gather foundArray from each process, using displacements and the foundLengths combine into totalFoundArray on master process
+             // found array on each process will contain index of pattern occuring in the overall text
             MPI_Gatherv(foundArray, found, MPI_INT,
                 totalFoundArray, foundLengths, displacements, MPI_INT,
                 0, MPI_COMM_WORLD);
 
+            // master process writes results from totalFoundArray
             if (worldRank == 0)
             {
                 // if not found
                 if(totalNumFound == 0)
                 {
                     printf("Not Found\n");
+                    // write to result file
                     fprintf(resultFile,"%d %d %d\n", textIndex, patternIndex, -1);
                 }
                 else 
@@ -552,18 +583,21 @@ int main(int argc, char **argv)
                     for (int i =0; i< totalNumFound; i++)
                     {
                         printf("%d\n", totalFoundArray[i]);
+                        // write to result file
                         fprintf(resultFile,"%d %d %d\n", textIndex, patternIndex, totalFoundArray[i]);
                     }
-                        
-                    // MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
                 }
                 
             }
+            free(totalFoundArray);
+            free(foundArray);
+            free(foundLengths);
+            free(displacements);
             
         }
+        free(patternData);
+        free(textData);
         
-        MPI_Barrier(MPI_COMM_WORLD);
-
 
     }
 
